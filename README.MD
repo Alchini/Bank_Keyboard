@@ -57,7 +57,7 @@ DB_PASSWORD=senhaBanco
 DB_PORT=portaBanco
 ```
 
-Depois para Conectar ao bancp
+Depois para Conectar ao banco
 
 ```sh
 psql -U postGress senhaBanco
