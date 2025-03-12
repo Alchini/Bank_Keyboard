@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
+const { encrypt } = require('./cryptoUtils');
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -10,44 +11,37 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Rota para cadastro
-router.post('/api/register', async (req, res) => {
-  console.log('Dados recebidos:', req.body); // Log 1
-
+router.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    console.log('Verificando se o usuário já existe...'); // Log 2
     const userExists = await pool.query(
       'SELECT * FROM users WHERE username = $1',
       [username]
     );
 
     if (userExists.rows.length > 0) {
-      console.log('Nome de usuário já existe:', username); // Log 3
       return res.status(400).json({ message: 'Nome de usuário já existe' });
     }
 
-    console.log('Inserindo novo usuário no banco de dados...'); // Log 4
+    const encryptedPassword = encrypt(password);
+
     await pool.query(
-      'INSERT INTO users (username, password) VALUES ($1, $2)',
-      [username, password]
+      'INSERT INTO users (username, password, iv) VALUES ($1, $2, $3)',
+      [username, encryptedPassword.encryptedData, encryptedPassword.iv]
     );
 
-    console.log('Cadastro realizado com sucesso!'); // Log 5
     res.json({ message: 'Cadastro realizado com sucesso!' });
   } catch (error) {
-    console.error('Erro ao cadastrar usuário:', error); // Log 6
+    console.error('Erro ao cadastrar usuário:', error);
     res.status(500).json({ message: 'Erro ao cadastrar usuário' });
   }
 });
 
-// Rota para login
-router.post('/api/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   const { username } = req.body;
 
   try {
-    // Busca o usuário no banco de dados
     const user = await pool.query(
       'SELECT * FROM users WHERE username = $1',
       [username]
@@ -57,7 +51,7 @@ router.post('/api/login', async (req, res) => {
       return res.status(400).json({ message: 'Usuário não encontrado' });
     }
 
-    res.json({ userId: user.rows[0].id }); // Retorna o ID do usuário
+    res.json({ userId: user.rows[0].id });
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro ao fazer login' });

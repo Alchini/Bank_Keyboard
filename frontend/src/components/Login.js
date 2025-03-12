@@ -5,14 +5,12 @@ import '../styles/styles.css';
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const [password, setPassword] = useState(''); // Senha só para cadastro
-
+  const [password, setPassword] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       if (isRegistering) {
-        // Cadastro de novo usuário
         if (password.length !== 4 || !/^\d{4}$/.test(password)) {
           alert('A senha deve ter exatamente 4 dígitos.');
           return;
@@ -24,11 +22,10 @@ function Login({ onLogin }) {
         });
         alert('Cadastro realizado com sucesso!');
       } else {
-        // Login
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, {
           username,
         });
-        onLogin(response.data.userId); // Passa o ID do usuário para o próximo passo
+        onLogin(response.data.userId);
       }
     } catch (error) {
       alert(error.response?.data?.message || 'Erro ao processar a requisição');
@@ -38,7 +35,6 @@ function Login({ onLogin }) {
   const handlePasswordChange = (e) => {
     const value = e.target.value;
 
-    // Permite apenas números e limita a 4 dígitos
     if (/^\d{0,4}$/.test(value)) {
       setPassword(value);
     }
@@ -55,7 +51,7 @@ function Login({ onLogin }) {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-        {isRegistering && ( // Mostra o campo de senha apenas no cadastro
+        {isRegistering && (
           <input
             type="password"
             placeholder="Senha (4 dígitos)"

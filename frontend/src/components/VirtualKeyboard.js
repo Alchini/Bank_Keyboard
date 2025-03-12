@@ -7,56 +7,58 @@ function VirtualKeyboard({ userId }) {
   const [selectedButtons, setSelectedButtons] = useState([]);
   const [clickedButtonId, setClickedButtonId] = useState(null);
 
-  // Solicita os botões ao backend ao carregar o componente
   useEffect(() => {
-    fetchButtons();
+    axios.get(`${process.env.REACT_APP_API_URL}/api/get-session`)
+      .then(response => {
+        console.log('Resposta do backend:', response.data);
+        setButtons(response.data.buttons);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar botões:', error);
+      });
   }, []);
-
   const fetchButtons = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get-session`);
-      console.log('Resposta do backend:', response.data); // Log da resposta
+      console.log('Resposta do backend:', response.data);
       setButtons(response.data.buttons);
     } catch (error) {
-      console.error('Erro ao buscar botões:', error); // Log de erro
+      console.error('Erro ao buscar botões:', error);
     }
   };
 
   const handleClick = (buttonId) => {
-    const button = buttons.find(b => b.id === buttonId); // Encontra o botão clicado
-    setSelectedButtons([...selectedButtons, button]); // Adiciona o botão à lista de selecionados
-    setClickedButtonId(buttonId); // Define o botão clicado
+    const button = buttons.find(b => b.id === buttonId);
+    setSelectedButtons([...selectedButtons, button]);
+    setClickedButtonId(buttonId);
 
     console.log('Button clicked:', buttonId);
     console.log('Selected buttons:', selectedButtons);
 
-    // Remove o destaque do botão após 200ms
     setTimeout(() => {
       setClickedButtonId(null);
     }, 200);
   };
 
   const submitSequence = async () => {
-    const buttonPairs = selectedButtons.map(button => [button.num1, button.num2]); // Extrai os pares de números
+    const buttonPairs = selectedButtons.map(button => [button.num1, button.num2]);
     console.log('Submitting button pairs:', buttonPairs);
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/validate-sequence`, {
-        buttonPairs, // Envia os pares de números
-        userId, // Passa o ID do usuário para validação
+        buttonPairs,
+        userId,
       });
       console.log('Response from backend:', response.data);
-      alert(response.data.message); // Exibe mensagem de sucesso
+      alert(response.data.message);
 
-      // Limpa os botões selecionados após o envio bem-sucedido
       setSelectedButtons([]);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Senha incorreta: solicita uma nova combinação de botões
         alert('Senha incorreta! Gerando nova combinação...');
         try {
-          await fetchButtons(); // Gera uma nova combinação de botões
-          setSelectedButtons([]); // Limpa os botões selecionados
+          await fetchButtons();
+          setSelectedButtons([]);
         } catch (err) {
           console.error('Erro ao gerar nova combinação:', err);
           alert('Erro ao gerar nova combinação. Tente novamente.');
