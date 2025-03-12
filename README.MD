@@ -35,20 +35,36 @@ cd Bank_Keyboard
 cd backend
 npm install   # Instala as dependências
 ```
+```sh
+npm run migrate  # Executa as migrações do banco de dados
+npm start        # Inicia o servidor
+```
 
-Configuração do Banco de Dados:
+### 3️⃣ Configuração do Banco de Dados:
 
 Certifique-se de que o PostgreSQL está rodando.
 
 Crie um banco de dados.
 
-Renomeie o arquivo .env.example para .env e preencha as credenciais do banco de dados.
+Voce deve configurar as Informações do seu banco a partir do Documento .env conforme Exemplo
 
 ```sh
-npm run migrate  # Executa as migrações do banco de dados
-npm start        # Inicia o servidor
+PORT=3001
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=bank_key
+DB_PASSWORD=senhaBanco
+DB_PORT=portaBanco
 ```
-### 3️⃣ Configuração do FrontEnd (React)
+
+Depois para Conectar ao bancp
+
+```sh
+psql -U postGress senhaBanco
+\c bank_key
+```
+
+### 4️⃣ Configuração do FrontEnd (React)
 
 ```sh
  cd ../frontend
