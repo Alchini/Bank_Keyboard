@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import Login from './components/Login';
+import VirtualKeyboard from './components/VirtualKeyboard';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL)
-      .then(response => setMessage(response.data))
-      .catch(error => console.error(error));
-  }, []);
+  const [userId, setUserId] = useState(null); // Armazena o ID do usuário após o login
 
   return (
     <div>
-      <h1>Frontend do Teclado Virtual</h1>
-      <p>{message}</p>
+      {userId ? (
+        // Se o usuário estiver logado, exibe o teclado virtual
+        <VirtualKeyboard userId={userId} />
+      ) : (
+        // Se não, exibe a tela de login/cadastro
+        <Login onLogin={setUserId} />
+      )}
     </div>
   );
 }

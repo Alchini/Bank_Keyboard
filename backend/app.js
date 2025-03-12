@@ -2,16 +2,24 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
+const sessionRoutes = require('./routes/sessionRoutes');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('backend funfando');
+const userRoutes = require('./routes/userRoutes');
+app.use(userRoutes);
+
+app.use((req, res, next) => {
+  console.log(`Recebendo requisição: ${req.method} ${req.url}`);
+  next();
 });
 
-const PORT = process.env.PORT || 3000;
+// Usa as rotas de sessão
+app.use(sessionRoutes);
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
