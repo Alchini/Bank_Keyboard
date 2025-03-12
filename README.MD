@@ -14,11 +14,11 @@ Bank Keyboard
 
 Antes de iniciar, certifique-se de ter instalado:
 
-Node.js (versão recomendada: LTS)
+- **Node.js** (versão recomendada: LTS)
 
-PostgreSQL (versão recomendada: 13+)
+- **PostgreSQL** (versão recomendada: 13+)
 
-Git
+- **Git**
 
 ### 🚀 Instalação e Configuração
 
