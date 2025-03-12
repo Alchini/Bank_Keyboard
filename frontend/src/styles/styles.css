@@ -1,37 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.toggle-button {
+  background-color: #6c757d;
+}
+
+.toggle-button:hover {
+  background-color: #5a6268;
+}
+
 .keyboard {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .keyboard button {
-    padding: 15px;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .keyboard button:hover {
-    background-color: #0056b3;
-  }
-  
-  .submit-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .submit-button:hover {
-    background-color: #218838;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.keyboard button {
+  margin: 15px;
+  padding: 5px;
+  background-color: #007bff;
+  color: #000000;
+  border: none;
+  border-radius: 50%; /* Borda arredondada */
+  cursor: pointer;
+  width: 50px; /* Largura fixa */
+  height: 50px; /* Altura fixa */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selected-buttons {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.selected-button {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.keyboard button:hover {
+  background-color: #0056b3;
+}
+
+.submit-button {
+  background-color: #28a745;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}

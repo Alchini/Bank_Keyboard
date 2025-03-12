@@ -44,20 +44,20 @@ router.post('/api/register', async (req, res) => {
 
 // Rota para login
 router.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username } = req.body;
 
   try {
     // Busca o usuário no banco de dados
     const user = await pool.query(
-      'SELECT * FROM users WHERE username = $1 AND password = $2',
-      [username, password]
+      'SELECT * FROM users WHERE username = $1',
+      [username]
     );
 
     if (user.rows.length === 0) {
-      return res.status(401).json({ message: 'Nome de usuário ou senha incorretos' });
+      return res.status(400).json({ message: 'Usuário não encontrado' });
     }
 
-    res.json({ userId: user.rows[0].id });
+    res.json({ userId: user.rows[0].id }); // Retorna o ID do usuário
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro ao fazer login' });

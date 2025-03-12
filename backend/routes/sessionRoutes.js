@@ -12,20 +12,24 @@ const pool = new Pool({
 });
 
 // Função para gerar uma combinação única de botões
+const combinationHistory = []; // Array para armazenar as últimas 100 combinações
+
 const getUniqueCombination = async () => {
   let buttons;
   let combinationId;
-  let existingCombination;
 
   do {
     buttons = generateButtons();
     combinationId = buttons.map(b => b.num1.toString() + b.num2.toString()).join('');
-    existingCombination = await pool.query(
-      'SELECT * FROM sessions WHERE combination_id = $1',
-      [combinationId]
-    );
-    console.log('Combinação existente:', existingCombination.rows); // Log da consulta
-  } while (existingCombination.rows.length > 0);
+  } while (combinationHistory.includes(combinationId)); // Verifica se a combinação já está no histórico
+
+  // Adiciona a nova combinação ao histórico
+  combinationHistory.push(combinationId);
+
+  // Mantém o histórico com no máximo 100 combinações
+  if (combinationHistory.length > 100) {
+    combinationHistory.shift(); // Remove a combinação mais antiga
+  }
 
   return { buttons, combinationId };
 };
@@ -53,7 +57,6 @@ router.get('/api/get-session', async (req, res) => {
 });
 
 // Rota para validar a sequência de cliques
-// Rota para validar a sequência de cliques
 router.post('/api/validate-sequence', async (req, res) => {
   const { buttonPairs, userId } = req.body;
 
@@ -79,10 +82,15 @@ router.post('/api/validate-sequence', async (req, res) => {
       JSON.stringify(combination) === JSON.stringify(expectedPasswordArray)
     );
 
+    console.log('Button pairs:', buttonPairs);
+    console.log('Expected password array:', expectedPasswordArray);
+    console.log('Generated combinations:', combinations);
+    console.log('Is valid:', isValid);
+
     if (isValid) {
       res.json({ message: 'Senha correta!' });
     } else {
-      res.status(401).json({ message: 'Senha incorreta!' });
+      res.status(401).json({ message: 'Senha incorreta!' }); // Retorna erro 401 para senha incorreta
     }
   } catch (error) {
     console.error('Erro ao validar sequência:', error);
@@ -106,14 +114,13 @@ function generateCombinations(buttonPairs) {
   return combinations;
 }
 
-
 // Função para gerar os pares de números
 function generateButtons() {
   const buttons = [];
   for (let i = 0; i < 6; i++) {
     const num1 = Math.floor(Math.random() * 10); // Primeiro número do par
     const num2 = Math.floor(Math.random() * 10); // Segundo número do par
-    buttons.push({ id: i + 1, value: `${num1}/${num2}`, num1, num2 });
+    buttons.push({ id: i + 1, value: `${num1} ou ${num2}`, num1, num2 });
   }
   return buttons;
 }
@@ -133,4 +140,5 @@ function validateSequence(sequence, expectedPassword) {
 
   return true;
 }
+
 module.exports = router;
